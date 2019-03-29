@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:d56a079c79f14da6ca533187aed1f4f6:bc1ef3dea40f0a3bbd58869032ad8684:452fadca6702d7197a947c20784a198b$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="player_sprite.png" width="502" height="211">
+    <sprite n="idle_l.png" x="1" y="1" w="95" h="104" oX="11" oY="13" oW="128" oH="128"/>
+    <sprite n="idle_r.png" x="98" y="1" w="95" h="104" oX="22" oY="13" oW="128" oH="128"/>
+    <sprite n="swing1.png" x="195" y="1" w="94" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing2.png" x="291" y="1" w="110" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing3.png" x="403" y="1" w="98" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing4.png" x="1" y="107" w="106" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing5.png" x="109" y="107" w="122" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing6.png" x="233" y="107" w="117" h="103" oX="0" oY="25" oW="128" oH="128"/>
+    <sprite n="swing7.png" x="352" y="107" w="114" h="103" oX="0" oY="25" oW="128" oH="128"/>
+</TextureAtlas>
