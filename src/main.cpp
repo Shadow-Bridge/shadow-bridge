@@ -1,6 +1,4 @@
 #include <SFML/Graphics.hpp>
-//#include <iostream>
-//#include <cmath>
 #include <random>
 #include <string>
 
@@ -30,6 +28,31 @@ int y;
 float height;
 float width;
 float inity;
+
+// Define 3 separate resolutions for our game: 1080p, 720p,
+
+struct resolution {
+	int width;
+	int height;
+}
+
+resolution fullHD;
+
+fullHD.width = 1920;
+fullHD.height = 1080;
+
+resolution HD;
+
+readyHD.width = 1280;
+readyHD.height = 720;
+
+resolution qHD;
+
+qHD.width = 960;
+qHD.height = 540;
+
+int width;
+int height;
 
 // Define velocity, acceleration and gravity. I hate physics.
 
@@ -64,9 +87,6 @@ void updateMovement() {
 
 int main()
 {
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	width = desktop.width;
-	height = desktop.height;
 	
 	// Create the main window and limit its framerate
 	sf::RenderWindow window(sf::VideoMode(width, height), "SFML window", sf::Style::Fullscreen);
