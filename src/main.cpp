@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 #include <string>
+#include <iostream>
 
 //Random number generator
 std::random_device rd;
@@ -23,42 +24,16 @@ int manay = 21;
 
 int gold = 0;
 
-int x;
-int y;
-float height;
-float width;
-float inity;
-
-// Define 3 separate resolutions for our game: 1080p, 720p,
-
-struct resolution {
-	int width;
-	int height;
-}
-
-resolution fullHD;
-
-fullHD.width = 1920;
-fullHD.height = 1080;
-
-resolution HD;
-
-readyHD.width = 1280;
-readyHD.height = 720;
-
-resolution qHD;
-
-qHD.width = 960;
-qHD.height = 540;
-
-int width;
-int height;
+int x = 0;
+int y = 0;
+float height = 0;
+float width = 0;
+float inity = 0;
+int resolution = 0;
 
 // Define velocity, acceleration and gravity. I hate physics.
 
-float velocityX = 0;
 float velocityY = 0;
-float accelerationX = 0;
 float accelerationY = 0;
 float gravity = 1;
 
@@ -71,26 +46,56 @@ bool playerBusy = false;
 
 // A function that makes sure our player moves nicely through space-time
 void updateMovement() {
-
 	if (y < inity)
 		velocityY += gravity;
 	else if (y > inity)
 		y = inity;
-
-	velocityX += accelerationX;
 	velocityY += accelerationY;
-
-	x += velocityX;
 	y += velocityY;
-
 }
+
+int NumDigits(int x)  
+{  
+    x = abs(x);  
+    return (x < 10 ? 1 :   
+        (x < 100 ? 2 :   
+        (x < 1000 ? 3 :   
+        (x < 10000 ? 4 :   
+        (x < 100000 ? 5 :   
+        (x < 1000000 ? 6 :   
+        (x < 10000000 ? 7 :  
+        (x < 100000000 ? 8 :  
+        (x < 1000000000 ? 9 :  
+        10)))))))));  
+}  
 
 int main()
 {
+	std::cout<<"Which resolution should the game start in?"<<std::endl;
+	std::cout<<"1) 1080p"<<std::endl;
+	std::cout<<"2) 720p (NOT WORKING)"<<std::endl<<std::endl;
+	std::cout<<"Press the corresponding number, followed by the Enter key: ";
+	std::cin>>resolution;
+	
+	switch (resolution)
+	{
+			case 1:
+				width = 1920;
+				height = 1080;
+				break;
+			case 2:
+				width = 1280;
+				height = 720;
+				break;
+			default:
+				return 0;
+	}
 	
 	// Create the main window and limit its framerate
 	sf::RenderWindow window(sf::VideoMode(width, height), "SFML window", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
+	
+	window.sf::Window::requestFocus();
 
 	float bg_ratio = height / 1024;
 	
@@ -167,6 +172,12 @@ int main()
 	mana_val.setCharacterSize(10);
 	mana_val.setFillColor(sf::Color::White);
 	mana_val.setPosition(healthx+3 + 108*bg_ratio, healthy-9 + 75*bg_ratio);
+	
+	sf::Text gold_val;
+	std::string gold_str;
+	gold_val.setFont(font);
+	gold_val.setCharacterSize(16);
+	gold_val.setFillColor(sf::Color::Yellow);
 	
 	float player_scale = 3.5 * bg_ratio;
 	
@@ -246,6 +257,9 @@ int main()
 							player.setTextureRect(sf::IntRect(189, 1, 94, 103));
 							mana -= 15;
 						}
+					}
+					if (event.key.code == sf::Keyboard::F4) {
+						return EXIT_SUCCESS;
 					}
 					break;
 				default:
@@ -413,6 +427,12 @@ int main()
 		mana_str = std::to_string(mana);
 		mana_val.setString(mana_str);
 		
+		gold_str = std::to_string(gold);
+		gold_val.setString(gold_str);
+		
+		int goldpos = NumDigits(gold);
+		gold_val.setPosition(width - (16 + 13*goldpos), 16);
+		
 		red_ghoul1.setPosition(rg1_x, rg_y);
 		red_ghoul2.setPosition(rg2_x, rg_y);
 		red_ghoul3.setPosition(rg3_x, rg_y);
@@ -431,6 +451,7 @@ int main()
 		window.draw(mana_bar);
 		window.draw(health_val);
 		window.draw(mana_val);
+		window.draw(gold_val);
 		window.display();
 	}
 	return EXIT_SUCCESS;
