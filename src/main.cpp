@@ -37,6 +37,8 @@ float gravity = 1;
 
 // A small boolean to keep track of whether our player is already jumping.
 bool isJumping = false;
+bool isPlaying = true;
+bool isPause = false;
 
 //Keeping track of whether or not the player character is performing an action
 
@@ -116,6 +118,12 @@ int main()
 	if (!t_bullet.loadFromFile("assets/bullet.png"))
 		return EXIT_FAILURE;
 	sf::Sprite bullet(t_bullet);
+	
+	//Initialize the endscreen graphic
+	sf::Texture t_endscreen;
+	if (!t_endscreen.loadFromFile("assets/endscreen.png"))
+		return EXIT_FAILURE;
+	sf::Sprite endscreen(t_endscreen);
 
 	//Initialize the red ghoul
 	sf::Texture t_red_ghoul;
@@ -131,6 +139,9 @@ int main()
 	sf::Clock attackClock;
 	sf::Clock attackTimer;
 	sf::Clock mana_clock;
+	sf::Clock endClock;
+
+	sf::Vector2i mouse;
 
 	status_bar.setPosition(statusx, statusy);
 	status_bar.setScale(0.862*2.5, 0.862*2.5);
@@ -202,6 +213,12 @@ int main()
 	red_ghoul4.setOrigin(63/2, 55/2);
 	red_ghoul4.setScale(rg_scale, rg_scale);
 	red_ghoul4.setTextureRect(sf::IntRect(63*0, 0, 63, 55));
+	
+	int endscreenx = (width/2) - 269*1.5;
+	int endscreeny = -800;
+	endscreen.setPosition(endscreenx, endscreeny);
+	endscreen.setTextureRect(sf::IntRect(0, 0, 539, 523));
+	endscreen.setScale(1.5, 1.5);
 
 	// Start the game loop
 	while (window.isOpen())
@@ -211,6 +228,7 @@ int main()
 		// if our player holds the Space key for too long.
 
 		window.setKeyRepeatEnabled(false);
+		mouse = sf::Mouse::getPosition();
 
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -225,19 +243,28 @@ int main()
 				// Let's teach our pirate how to jump.
 				// And by that, I mean let's launch him into the air at a speed of 10 pixels per frame.
 				case sf::Event::KeyPressed:
-					if (event.key.code == sf::Keyboard::Up) {
-						if (isJumping == false) {
-							velocityY = -25;
-							isJumping = true;
+					if (isPlaying) {
+						if (event.key.code == sf::Keyboard::Up) {
+							if (isJumping == false) {
+								velocityY = -25;
+								isJumping = true;
+							}
+						}
+						if (event.key.code == sf::Keyboard::Space) {
+							if ((playerBusy == false) and (mana >= 15)) {
+								playerBusy = true;
+								player.setTextureRect(sf::IntRect(189, 1, 94, 103));
+								mana -= 15;
+							}
 						}
 					}
-					if (event.key.code == sf::Keyboard::Space) {
-						if ((playerBusy == false) and (mana >= 15)) {
-							playerBusy = true;
-							player.setTextureRect(sf::IntRect(189, 1, 94, 103));
-							mana -= 15;
+						if (event.key.code == sf::Keyboard::Escape) {
+							if (isPause == false)	
+								isPause = true;
+							else {
+								isPause = false;
+							}
 						}
-					}
 					if (event.key.code == sf::Keyboard::F4) {
 						return EXIT_SUCCESS;
 					}
@@ -246,91 +273,91 @@ int main()
 					break;
 			}
 		}
-
+if (isPlaying) {
 		//Let the player skedaddle across the screen, but not too far - inside the boundaries we defined earlier
-		if ((x >= leftedge) && (x <= rightedge)) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			{
-				x = x + 6;
-				player.setTextureRect(sf::IntRect(95, 1, 95, 104));
-			}
-
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			{
-				x = x - 6;
-				player.setTextureRect(sf::IntRect(1, 1, 95, 104));
-			}
-
-			//Sometimes the player ends up magically outside the boundaries. We're slapping him back into place.
-			if (x < leftedge)
-				x = leftedge;
-
-			if (x > rightedge)
-				x = rightedge;
-		}
-
-		if (playerBusy) {
-				if (attackClock.getElapsedTime().asSeconds() > 0.017f) {
-					attack_frame++;
-					switch (attack_frame) {
-						case 1:
-							player.setTextureRect(sf::IntRect(189, 1, 94, 103));
-							attackClock.restart();
-							break;
-						case 4:
-							player.setTextureRect(sf::IntRect(283, 1, 111, 105));
-							attackClock.restart();
-							break;
-						case 2:
-							player.setTextureRect(sf::IntRect(393, 1, 105, 105));
-							attackClock.restart();
-							break;
-						case 3:
-							player.setTextureRect(sf::IntRect(-1, 105, 107, 103));
-							attackClock.restart();
-							break;
-						case 5:
-							player.setTextureRect(sf::IntRect(105, 105, 122, 102));
-							attackClock.restart();
-							break;
-						case 6:
-							player.setTextureRect(sf::IntRect(227, 105, 117, 102));
-							attackClock.restart();
-							break;
-						case 7:
-							player.setTextureRect(sf::IntRect(345, 105, 114, 102));
-							attackClock.restart();
-							break;
-						case 8:
-							attack_frame = 1;
-							player.setTextureRect(sf::IntRect(189, 1, 94, 103));
-							playerBusy = false;
-							attackClock.restart();
-							if ((rg1_x - x > 0) and (rg1_x - x < 300)) {
-								rg1_x = width + uni(rng);
-								gold = gold + 5;
-							}
-							if ((rg2_x - x > 0) and (rg2_x - x < 300)) {
-								rg2_x = width + uni(rng);
-								gold = gold + 5;
-
-							}
-							if ((rg3_x - x > 0) and (rg3_x - x < 300)) {
-								rg3_x = width + uni(rng);
-								gold = gold + 5;
-
-							}
-							if ((rg4_x - x > 0) and (rg4_x - x < 300)) {
-								rg4_x = width + uni(rng);
-								gold = gold + 5;
-
-							}
-						default:
-							attack_frame = 1;
-							attackClock.restart();
-					}
+			if ((x >= leftedge) && (x <= rightedge)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				{
+					x = x + 6;
+					player.setTextureRect(sf::IntRect(95, 1, 95, 104));
 				}
-		}
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				{
+					x = x - 6;
+					player.setTextureRect(sf::IntRect(1, 1, 95, 104));
+				}
+
+				//Sometimes the player ends up magically outside the boundaries. We're slapping him back into place.
+				if (x < leftedge)
+					x = leftedge;
+
+				if (x > rightedge)
+					x = rightedge;
+			}
+		
+			if (playerBusy) {
+					if (attackClock.getElapsedTime().asSeconds() > 0.017f) {
+						attack_frame++;
+						switch (attack_frame) {
+							case 1:
+								player.setTextureRect(sf::IntRect(189, 1, 94, 103));
+								attackClock.restart();
+								break;
+							case 4:
+								player.setTextureRect(sf::IntRect(283, 1, 111, 105));
+								attackClock.restart();
+								break;
+							case 2:
+								player.setTextureRect(sf::IntRect(393, 1, 105, 105));
+								attackClock.restart();
+								break;
+							case 3:
+								player.setTextureRect(sf::IntRect(-1, 105, 107, 103));
+								attackClock.restart();
+								break;
+							case 5:
+								player.setTextureRect(sf::IntRect(105, 105, 122, 102));
+								attackClock.restart();
+								break;
+							case 6:
+								player.setTextureRect(sf::IntRect(227, 105, 117, 102));
+								attackClock.restart();
+								break;
+							case 7:
+								player.setTextureRect(sf::IntRect(345, 105, 114, 102));
+								attackClock.restart();
+								break;
+							case 8:
+								attack_frame = 1;
+								player.setTextureRect(sf::IntRect(189, 1, 94, 103));
+								playerBusy = false;
+								attackClock.restart();
+								if ((rg1_x - x > 0) and (rg1_x - x < 300)) {
+									rg1_x = width + uni(rng);
+									gold = gold + 5;
+								}
+								if ((rg2_x - x > 0) and (rg2_x - x < 300)) {
+									rg2_x = width + uni(rng);
+									gold = gold + 5;
+
+								}
+								if ((rg3_x - x > 0) and (rg3_x - x < 300)) {
+									rg3_x = width + uni(rng);
+									gold = gold + 5;
+
+								}
+								if ((rg4_x - x > 0) and (rg4_x - x < 300)) {
+									rg4_x = width + uni(rng);
+									gold = gold + 5;
+
+								}
+							default:
+								attack_frame = 1;
+								attackClock.restart();
+						}
+					}
+			}
 		// Update the player's position
 		updateMovement();
 		
@@ -383,13 +410,12 @@ int main()
 			frame++;
 			clock.restart();
 		}
-		
-		
+}		
 		if ((mana > 100) or (mana < 0)) {
 			mana = 0;
 		}
 		
-		if (mana_clock.getElapsedTime().asSeconds() > 0.20f) {
+		if (mana_clock.getElapsedTime().asSeconds() > 0.20f && isPause == false && health != 0) {
 			if (mana < 100) {
 				mana += 1;
 				mana_clock.restart();
@@ -397,7 +423,50 @@ int main()
 		}
 		
 		if (health == 0) {
-			return EXIT_SUCCESS;
+			isPlaying = false;
+		}
+		
+		if (isPlaying == false && health == 0) {
+			player.setColor(sf::Color(255, 255, 255, 150));
+			if (endscreeny != -20) {
+				if (endClock.getElapsedTime().asSeconds() > 0.020f) {
+					endscreeny = endscreeny + 20;
+					endscreen.setPosition(endscreenx, endscreeny);
+					endClock.restart();
+				}
+			}
+			if (endscreeny == -20) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+					return EXIT_SUCCESS;
+				}
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (((mouse.x > endscreenx + 156) && (mouse.x < endscreenx + 535)) && ((mouse.y > endscreeny - 20 + 275) && (mouse.y < endscreeny - 20 + 335))) {
+						return EXIT_SUCCESS;
+					}
+				}
+			}
+		}
+		
+		if (isPause == true && health != 0) {
+			isPlaying = false;
+			if (endscreeny != -20) {
+				if (endClock.getElapsedTime().asSeconds() > 0.020f) {
+					endscreeny = endscreeny + 20;
+					endscreen.setPosition(endscreenx, endscreeny);
+					endClock.restart();
+				}
+			}
+		}
+		
+		if (isPause == false && health != 0) {
+			if (endscreeny != -800) {
+				isPlaying = true;
+				if (endClock.getElapsedTime().asSeconds() > 0.001f) {
+					endscreeny = endscreeny - 20;
+					endscreen.setPosition(endscreenx, endscreeny);
+					endClock.restart();
+				}
+			}
 		}
 		health_bar.setTextureRect(sf::IntRect(0, 0, health/0.862, 58*0.862));
 		mana_bar.setTextureRect(sf::IntRect(0, 0, mana/0.862, 58*0.862));
@@ -432,7 +501,9 @@ int main()
 		window.draw(health_val);
 		window.draw(mana_val);
 		window.draw(gold_val);
+		window.draw(endscreen);
 		window.display();
 	}
+	
 	return EXIT_SUCCESS;
 }
