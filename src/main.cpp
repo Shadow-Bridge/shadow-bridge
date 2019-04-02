@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 #include <string>
-#include <iostream>
 
 //Random number generator
 std::random_device rd;
@@ -76,7 +75,6 @@ int main()
 	// Create the main window and limit its framerate
 	sf::RenderWindow window(sf::VideoMode(width, height), "SFML window", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
-	
 	window.sf::Window::requestFocus();
 
 	float bg_ratio = height / 1024;
