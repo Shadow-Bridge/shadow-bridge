@@ -29,7 +29,6 @@ int y = 0;
 float height = 0;
 float width = 0;
 float inity = 0;
-int resolution = 0;
 
 // Define velocity, acceleration and gravity. I hate physics.
 
@@ -71,25 +70,8 @@ int NumDigits(int x)
 
 int main()
 {
-	std::cout<<"Which resolution should the game start in?"<<std::endl;
-	std::cout<<"1) 1080p"<<std::endl;
-	std::cout<<"2) 720p (NOT WORKING)"<<std::endl<<std::endl;
-	std::cout<<"Press the corresponding number, followed by the Enter key: ";
-	std::cin>>resolution;
-	
-	switch (resolution)
-	{
-			case 1:
-				width = 1920;
-				height = 1080;
-				break;
-			case 2:
-				width = 1280;
-				height = 720;
-				break;
-			default:
-				return 0;
-	}
+	width = 1920;
+	height = 1080;
 	
 	// Create the main window and limit its framerate
 	sf::RenderWindow window(sf::VideoMode(width, height), "SFML window", sf::Style::Fullscreen);
