@@ -40,6 +40,10 @@ float gravity = 0.85;
 bool isJumping = false;
 bool isPlaying = true;
 bool isPause = false;
+bool isAttacking1 = false;
+bool isAttacking2 = false;
+bool isAttacking3 = false;
+bool isAttacking4 = false;
 
 //Keeping track of whether or not the player character is performing an action
 
@@ -194,11 +198,11 @@ int main()
 	player.setTextureRect(sf::IntRect(1, 1, 95, 104)); // Switch to the first frame of the player spritesheet
 	
 	float rg_scale = 4.5*bg_ratio;
-	float rg1_x = width + 256;
+	float rg1_x = width + uni(rng);
 	float rg_y = height - (height/7) - (16*rg_scale);
-	float rg2_x = width + 256 + 256;
-	float rg3_x = width + 256 + 512;
-	float rg4_x = width + 256 + 512 + 256;
+	float rg2_x = width + uni(rng);
+	float rg3_x = width + uni(rng);
+	float rg4_x = width + uni(rng);
 	
 	red_ghoul1.setPosition(rg1_x, rg_y);
 	red_ghoul1.setOrigin(63/2, 55/2);
@@ -396,40 +400,34 @@ if (isPlaying) {
 		if (clock.getElapsedTime().asSeconds() > 0.20f) {
 			if (frame >=3)
 				frame = 0;
-			if (rg1_x - x > 128 -16) {
-				rg1_x -= 24;
+			if (isAttacking1 == false) {
+				if (rg1_x - x > 128 -16) {
+					rg1_x -= 24;
+				}
+				else if (rg1_x - x < -(128 - 16)) {
+					rg1_x += 24;
+				}
+				switch (frame) {
+					case 0:
+						red_ghoul1.setTextureRect(sf::IntRect(140, 70, 140 + 63, 70+55));
+						break;
+					case 1:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 140, 63, 140 + 55));
+						break;
+					case 2:
+						red_ghoul1.setTextureRect(sf::IntRect(63, 140, 63*2, 140 + 55));
+						break;
+				}
 			}
-			else if (rg1_x - x < -(128 - 16)) {
-				rg1_x += 24;
-			}
-			
-			if (rg2_x - x > 128 -16) {
-				rg2_x -= 24;
-			}
-			else if (rg2_x - x < -(128 - 16)) {
-				rg2_x += 24;
-			}
-			if (rg3_x - x > 128 -16) {
-				rg3_x -= 24;
-			}
-			else if (rg3_x - x < -(128 - 16)) {
-				rg3_x += 24;
-			}
-			if (rg4_x - x > 128 -16) {
-				rg4_x -= 24;
-			}
-			else if (rg4_x - x < -(128 - 16)) {
-				rg4_x += 24;
-			}
-			
-			if (((std::abs(rg1_x - x) <= (128 + 16)) or (std::abs(rg2_x - x) <= (128 + 16)) or (std::abs(rg3_x - x) <= (128 + 16)) or (std::abs(rg4_x - x) <= (128 + 16))) and std::abs(y-rg_y)<200)  {
-					health -= 5;
-			} 
-			red_ghoul1.setTextureRect(sf::IntRect(63 * frame, 0, 63, 48));
-			red_ghoul2.setTextureRect(sf::IntRect(63 * frame, 0, 63, 48));
-			red_ghoul3.setTextureRect(sf::IntRect(63 * frame, 0, 63, 48));
-			red_ghoul4.setTextureRect(sf::IntRect(63 * frame, 0, 63, 48));
 			frame++;
+		
+			if ((std::abs(rg1_x - x) <= (128 + 16)) and std::abs(y-rg_y)<200) {
+				isAttacking1 = true;
+				health -= 5;
+			}
+			else {
+				isAttacking1 = false;
+			}
 			clock.restart();
 		}
 }		
