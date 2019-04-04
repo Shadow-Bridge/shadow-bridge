@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 #include <string>
+#include <cmath>
+#include <iostream>
 
 //Random number generator
 std::random_device rd;
@@ -33,7 +35,7 @@ float inity = 0;
 
 float velocityY = 0;
 float accelerationY = 0;
-float gravity = 1;
+float gravity = 0.85;
 
 // A small boolean to keep track of whether our player is already jumping.
 bool isJumping = false;
@@ -78,6 +80,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(width, height), "SFML window", sf::Style::Fullscreen);
 	window.setFramerateLimit(60);
 	window.sf::Window::requestFocus();
+	window.setVerticalSyncEnabled(true);
 
 	float bg_ratio = height / 1024;
 	
@@ -278,13 +281,23 @@ if (isPlaying) {
 			if ((x >= leftedge) && (x <= rightedge)) {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
-					x = x + 6;
+					if (isJumping) {
+						x = x + 9;
+					}
+					else {
+						x = x + 6;
+					}
 					player.setTextureRect(sf::IntRect(95, 1, 95, 104));
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					x = x - 6;
+					if (isJumping) {
+						x = x - 9;
+					}
+					else {
+						x = x - 6;
+					}
 					player.setTextureRect(sf::IntRect(1, 1, 95, 104));
 				}
 
@@ -333,21 +346,21 @@ if (isPlaying) {
 								player.setTextureRect(sf::IntRect(189, 1, 94, 103));
 								playerBusy = false;
 								attackClock.restart();
-								if ((rg1_x - x > 0) and (rg1_x - x < 300)) {
+								if (((rg1_x - x > 0) and (rg1_x - x < 300)) and std::abs(y-rg_y)<200) {
 									rg1_x = width + uni(rng);
 									gold = gold + 5;
 								}
-								if ((rg2_x - x > 0) and (rg2_x - x < 300)) {
+								if (((rg2_x - x > 0) and (rg2_x - x < 300)) and std::abs(y-rg_y)<200) {
 									rg2_x = width + uni(rng);
 									gold = gold + 5;
 
 								}
-								if ((rg3_x - x > 0) and (rg3_x - x < 300)) {
+								if (((rg3_x - x > 0) and (rg3_x - x < 300)) and std::abs(y-rg_y)<200) {
 									rg3_x = width + uni(rng);
 									gold = gold + 5;
 
 								}
-								if ((rg4_x - x > 0) and (rg4_x - x < 300)) {
+								if (((rg4_x - x > 0) and (rg4_x - x < 300)) and std::abs(y-rg_y)<200) {
 									rg4_x = width + uni(rng);
 									gold = gold + 5;
 
@@ -400,7 +413,7 @@ if (isPlaying) {
 				rg4_x += 24;
 			}
 			
-			if ((std::abs(rg1_x - x) <= (128 + 16)) or (std::abs(rg2_x - x) <= (128 + 16)) or (std::abs(rg3_x - x) <= (128 + 16)) or (std::abs(rg4_x - x) <= (128 + 16)))  {
+			if (((std::abs(rg1_x - x) <= (128 + 16)) or (std::abs(rg2_x - x) <= (128 + 16)) or (std::abs(rg3_x - x) <= (128 + 16)) or (std::abs(rg4_x - x) <= (128 + 16))) and std::abs(y-rg_y)<200)  {
 					health -= 5;
 			} 
 			red_ghoul1.setTextureRect(sf::IntRect(63 * frame, 0, 63, 48));
@@ -456,6 +469,11 @@ if (isPlaying) {
 					endClock.restart();
 				}
 			}
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (((mouse.x > endscreenx + 156) && (mouse.x < endscreenx + 535)) && ((mouse.y > endscreeny - 20 + 275) && (mouse.y < endscreeny - 20 + 335))) {
+						return EXIT_SUCCESS;
+					}
+				}
 		}
 		
 		if (isPause == false && health != 0) {
