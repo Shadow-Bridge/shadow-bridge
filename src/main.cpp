@@ -131,6 +131,12 @@ int main()
 	if (!t_endscreen.loadFromFile("assets/endscreen.png"))
 		return EXIT_FAILURE;
 	sf::Sprite endscreen(t_endscreen);
+	
+	sf::Texture t_menu;
+	if (!t_menu.loadFromFile("assets/menu.png"))
+		return EXIT_FAILURE;
+	sf::Sprite menu(t_menu);
+
 
 	//Initialize the red ghoul
 	sf::Texture t_red_ghoul;
@@ -226,6 +232,12 @@ int main()
 	endscreen.setPosition(endscreenx, endscreeny);
 	endscreen.setTextureRect(sf::IntRect(0, 0, 539, 523));
 	endscreen.setScale(1.5, 1.5);
+	
+	int menux = (width/2) - 269*1.5;
+	int menuy = -800;
+	menu.setPosition(menux, menuy);
+	menu.setTextureRect(sf::IntRect(0, 0, 539, 523));
+	menu.setScale(1.5, 1.5);
 
 	// Start the game loop
 	while (window.isOpen())
@@ -272,9 +284,9 @@ int main()
 								isPause = false;
 							}
 						}
-					if (event.key.code == sf::Keyboard::F4) {
-						return EXIT_SUCCESS;
-					}
+						if (event.key.code == sf::Keyboard::F4) {
+							health = 0;
+						}
 					break;
 				default:
 					break;
@@ -460,32 +472,38 @@ if (isPlaying) {
 					if (((mouse.x > endscreenx + 156) && (mouse.x < endscreenx + 535)) && ((mouse.y > endscreeny - 20 + 275) && (mouse.y < endscreeny - 20 + 335))) {
 						return EXIT_SUCCESS;
 					}
+					if (((mouse.x > endscreenx + 200) && (mouse.x < endscreenx + 570)) && ((mouse.y > endscreeny - 20 + 666) && (mouse.y < endscreeny - 20 + 735))) {
+						return EXIT_SUCCESS;
+					}
 				}
 			}
 		}
 		
 		if (isPause == true && health != 0) {
 			isPlaying = false;
-			if (endscreeny != -20) {
+			if (menuy != -20) {
 				if (endClock.getElapsedTime().asSeconds() > 0.020f) {
-					endscreeny = endscreeny + 20;
-					endscreen.setPosition(endscreenx, endscreeny);
+					menuy = menuy + 20;
+					menu.setPosition(menux, menuy);
 					endClock.restart();
 				}
 			}
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (((mouse.x > endscreenx + 156) && (mouse.x < endscreenx + 535)) && ((mouse.y > endscreeny - 20 + 275) && (mouse.y < endscreeny - 20 + 335))) {
+					if (((mouse.x > menux + 156) && (mouse.x < menux + 535)) && ((mouse.y > menuy - 20 + 275) && (mouse.y < menuy - 20 + 335))) {
+						isPause = false;
+					}
+					if (((mouse.x > menux + 200) && (mouse.x < menux + 570)) && ((mouse.y > menuy - 20 + 666) && (mouse.y < menuy - 20 + 735))) {
 						return EXIT_SUCCESS;
 					}
 				}
 		}
 		
 		if (isPause == false && health != 0) {
-			if (endscreeny != -800) {
+			if (menuy != -800) {
 				isPlaying = true;
 				if (endClock.getElapsedTime().asSeconds() > 0.001f) {
-					endscreeny = endscreeny - 20;
-					endscreen.setPosition(endscreenx, endscreeny);
+					menuy = menuy - 20;
+					menu.setPosition(menux, menuy);
 					endClock.restart();
 				}
 			}
@@ -524,6 +542,7 @@ if (isPlaying) {
 		window.draw(mana_val);
 		window.draw(gold_val);
 		window.draw(endscreen);
+		window.draw(menu);
 		window.display();
 	}
 	
