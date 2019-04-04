@@ -1,12 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/GpuPreference.hpp>
 #include <SFML/Main.hpp>
 #include <random>
 #include <string>
-#include <cmath>
-#include <iostream>
-
-SFML_DEFINE_DISCRETE_GPU_PREFERENCE
 
 //Random number generator
 std::random_device rd;
@@ -205,8 +200,6 @@ int main()
 	float rg3_x = width + 256 + 512;
 	float rg4_x = width + 256 + 512 + 256;
 	
-	
-
 	red_ghoul1.setPosition(rg1_x, rg_y);
 	red_ghoul1.setOrigin(63/2, 55/2);
 	red_ghoul1.setScale(rg_scale, rg_scale);
@@ -470,7 +463,23 @@ if (isPlaying) {
 				}
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					if (((mouse.x > endscreenx + 156) && (mouse.x < endscreenx + 535)) && ((mouse.y > endscreeny - 20 + 275) && (mouse.y < endscreeny - 20 + 335))) {
-						return EXIT_SUCCESS;
+						rg1_x = width + 256;
+						rg_y = height - (height/7) - (16*rg_scale);
+						rg2_x = width + 256 + 256;
+						rg3_x = width + 256 + 512;
+						rg4_x = width + 256 + 512 + 256;
+						y = inity;
+						x = 128+128;
+						health = 100;
+						mana = 100;
+						gold = 0;
+						player.setPosition(x, y);
+						red_ghoul1.setPosition(rg1_x, rg_y);
+						red_ghoul2.setPosition(rg2_x, rg_y);
+						red_ghoul3.setPosition(rg3_x, rg_y);
+						red_ghoul4.setPosition(rg4_x, rg_y);
+						player.setColor(sf::Color(255, 255, 255, 255));
+						isPlaying = true;
 					}
 					if (((mouse.x > endscreenx + 200) && (mouse.x < endscreenx + 570)) && ((mouse.y > endscreeny - 20 + 666) && (mouse.y < endscreeny - 20 + 735))) {
 						return EXIT_SUCCESS;
@@ -507,6 +516,13 @@ if (isPlaying) {
 					endClock.restart();
 				}
 			}
+			if (endscreeny != -800) {
+				if (endClock.getElapsedTime().asSeconds() > 0.001f) {
+					endscreeny = endscreeny - 20;
+					endscreen.setPosition(endscreenx, endscreeny);
+					endClock.restart();
+				}
+			}
 		}
 		health_bar.setTextureRect(sf::IntRect(0, 0, health/0.862, 58*0.862));
 		mana_bar.setTextureRect(sf::IntRect(0, 0, mana/0.862, 58*0.862));
@@ -528,7 +544,6 @@ if (isPlaying) {
 		red_ghoul4.setPosition(rg4_x, rg_y);
 
 		// Clear the screen, redraw the sprites and render them;
-		window.clear();
 		window.draw(background);
 		window.draw(player);
 		window.draw(red_ghoul1);
@@ -545,6 +560,5 @@ if (isPlaying) {
 		window.draw(menu);
 		window.display();
 	}
-	
 	return EXIT_SUCCESS;
 }
