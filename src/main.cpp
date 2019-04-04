@@ -317,16 +317,16 @@ if (isPlaying) {
 								player.setTextureRect(sf::IntRect(189, 1, 94, 103));
 								attackClock.restart();
 								break;
-							case 4:
-								player.setTextureRect(sf::IntRect(283, 1, 111, 105));
-								attackClock.restart();
-								break;
 							case 2:
 								player.setTextureRect(sf::IntRect(393, 1, 105, 105));
 								attackClock.restart();
 								break;
 							case 3:
 								player.setTextureRect(sf::IntRect(-1, 105, 107, 103));
+								attackClock.restart();
+								break;
+							case 4:
+								player.setTextureRect(sf::IntRect(283, 1, 111, 105));
 								attackClock.restart();
 								break;
 							case 5:
