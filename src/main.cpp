@@ -1,8 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/GpuPreference.hpp>
+#include <SFML/Main.hpp>
 #include <random>
 #include <string>
 #include <cmath>
 #include <iostream>
+
+SFML_DEFINE_DISCRETE_GPU_PREFERENCE
 
 //Random number generator
 std::random_device rd;
