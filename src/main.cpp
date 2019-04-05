@@ -8,7 +8,8 @@ std::random_device rd;
 std::mt19937 rng(rd());
 std::uniform_int_distribution<int> uni(128,1024);
 
-int frame = 0;
+int m_frame = 0;
+int red_ghoul_attack_frame = 0;
 int attack_frame = 0;
 
 int statusx = 34;
@@ -152,6 +153,7 @@ int main()
 	sf::Clock attackTimer;
 	sf::Clock mana_clock;
 	sf::Clock endClock;
+	sf::Clock rg_attackClock;
 
 	sf::Vector2i mouse;
 
@@ -398,16 +400,18 @@ if (isPlaying) {
 
 		// Animate the red ghoul
 		if (clock.getElapsedTime().asSeconds() > 0.20f) {
-			if (frame >=3)
-				frame = 0;
 			if (isAttacking1 == false) {
+				rg_y = height - (height/7) - (16*rg_scale);
+				if (m_frame >=3) {
+					m_frame = 0;
+				}
 				if (rg1_x - x > 128 -16) {
 					rg1_x -= 24;
 				}
 				else if (rg1_x - x < -(128 - 16)) {
 					rg1_x += 24;
 				}
-				switch (frame) {
+				switch (m_frame) {
 					case 0:
 						red_ghoul1.setTextureRect(sf::IntRect(140, 70, 140 + 63, 70+55));
 						break;
@@ -418,17 +422,130 @@ if (isPlaying) {
 						red_ghoul1.setTextureRect(sf::IntRect(63, 140, 63*2, 140 + 55));
 						break;
 				}
-			}
-			frame++;
-		
-			if ((std::abs(rg1_x - x) <= (128 + 16)) and std::abs(y-rg_y)<200) {
-				isAttacking1 = true;
-				health -= 5;
-			}
-			else {
-				isAttacking1 = false;
+				m_frame++;
 			}
 			clock.restart();
+		}
+		if (rg_attackClock.getElapsedTime().asSeconds() > 0.10f) {
+			if ((std::abs(rg1_x - x) <= (128 + 16)) and std::abs(y-rg_y)<200) {
+				isAttacking1 = true;
+				if (red_ghoul_attack_frame >= 10) {
+					red_ghoul_attack_frame = 0;
+					rg_y = height - (height/7) - (16*rg_scale);
+				}
+				switch (red_ghoul_attack_frame) {
+					case 0:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 1:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 2:
+						red_ghoul1.setTextureRect(sf::IntRect(140, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 3:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 70, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 4:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 70, 70, 70));
+						health -= 20;
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 5:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 70, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 6:
+						red_ghoul1.setTextureRect(sf::IntRect(140, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 7:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 8:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 9:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+						
+				}
+				red_ghoul_attack_frame++;
+			}
+			else {
+				if (red_ghoul_attack_frame < 10 and red_ghoul_attack_frame > 0) {
+					switch (red_ghoul_attack_frame) {
+						case 0:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 1:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 2:
+						red_ghoul1.setTextureRect(sf::IntRect(140, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 3:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 70, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 4:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 70, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 5:
+						red_ghoul1.setTextureRect(sf::IntRect(70, 70, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 6:
+						red_ghoul1.setTextureRect(sf::IntRect(140, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 7:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 8:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+					case 9:
+						red_ghoul1.setTextureRect(sf::IntRect(0, 0, 70, 70));
+						rg_y = height - (height/7) - (16*rg_scale) - 30;
+						break;
+						
+					}
+					red_ghoul_attack_frame++;
+					if (red_ghoul_attack_frame >= 10) {
+						red_ghoul_attack_frame = 0;
+						rg_y = height - (height/7) - (16*rg_scale);
+						red_ghoul1.setTextureRect(sf::IntRect(140, 70, 140 + 63, 70+55));
+					}
+				}
+				else {
+					isAttacking1 = false;
+					if (red_ghoul_attack_frame = 0) {
+						rg_y = height - (height/7) - (16*rg_scale);
+						red_ghoul1.setTextureRect(sf::IntRect(140, 70, 140 + 63, 70+55));
+					}
+					if (red_ghoul_attack_frame >= 10) {
+						red_ghoul_attack_frame = 0;
+						rg_y = height - (height/7) - (16*rg_scale);
+						red_ghoul1.setTextureRect(sf::IntRect(140, 70, 140 + 63, 70+55));
+					}
+					
+				}
+			}
+			rg_attackClock.restart();
 		}
 }		
 		if ((mana > 100) or (mana < 0)) {
